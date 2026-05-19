@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IHK AP2 FiSi — Musteranalyse & Prognose 2026</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f0; color: #1a1a18; line-height: 1.6; font-size: 14px; }
+  .page { max-width: 1020px; margin: 0 auto; padding: 36px 20px 80px; }
+  header { margin-bottom: 28px; }
+  h1 { font-size: 22px; font-weight: 600; margin-bottom: 4px; }
+  .subtitle { font-size: 13px; color: #5f5e5a; }
+  .tabs { display: flex; gap: 6px; margin-bottom: 24px; flex-wrap: wrap; }
+  .tab { padding: 8px 18px; border: 1px solid #d3d1c7; border-radius: 8px; font-size: 13px; cursor: pointer; background: #fff; color: #5f5e5a; transition: all 0.15s; font-family: inherit; }
+  .tab.active { background: #1a1a18; color: #fff; border-color: #1a1a18; font-weight: 500; }
+  .tab:hover:not(.active) { background: #f1efe8; }
+  .section { display: none; }
+  .section.active { display: block; }
+  .card { background: #fff; border: 0.5px solid #d3d1c7; border-radius: 12px; padding: 18px; margin-bottom: 14px; }
+  .card-title { font-size: 15px; font-weight: 600; color: #1a1a18; margin-bottom: 14px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .mcard { background: #f1efe8; border-radius: 8px; padding: 12px 14px; }
+  .ml { font-size: 11px; color: #888780; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 4px; }
+  .mv { font-size: 20px; font-weight: 600; color: #1a1a18; }
+  .sl { font-size: 11px; font-weight: 600; color: #888780; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 14px; }
+  .pattern { background: #f5f5f0; border-radius: 8px; padding: 13px; margin-bottom: 10px; }
+  .pattern-title { font-size: 13px; font-weight: 600; margin-bottom: 5px; }
+  .pattern-text { font-size: 12px; color: #444441; line-height: 1.6; }
+  .note { font-size: 11px; color: #888780; font-style: italic; margin-top: 10px; }
+  /* Timeline table */
+  .tl-wrap { overflow-x: auto; }
+  .tl { border-collapse: collapse; width: 100%; font-size: 11px; min-width: 640px; }
+  .tl th { padding: 7px 10px; text-align: left; color: #888780; border-bottom: 1px solid #d3d1c7; font-weight: 600; white-space: nowrap; background: #f8f8f5; }
+  .tl td { padding: 6px 10px; border-bottom: 0.5px solid #eeeee8; vertical-align: top; }
+  .tl tr:last-child td { border-bottom: none; }
+  .tl .exam { font-weight: 600; color: #5f5e5a; white-space: nowrap; }
+  .tl tr.pred { background: #eeedfe; }
+  .tl tr.pred .exam { color: #3c3489; }
+  /* Chips */
+  .chip { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 10px; border: 1px solid; white-space: nowrap; margin: 1px 2px 1px 0; }
+  .cb { background: #e6f1fb; color: #0c447c; border-color: #b5d4f4; }
+  .cg { background: #e1f5ee; color: #085041; border-color: #9fe1cb; }
+  .ca { background: #faeeda; color: #633806; border-color: #fac775; }
+  .cp { background: #eeedfe; color: #3c3489; border-color: #cecbf6; }
+  .cr { background: #fcebeb; color: #791f1f; border-color: #f7c1c1; }
+  .cgr { background: #f1efe8; color: #5f5e5a; border-color: #d3d1c7; }
+  /* Escalation */
+  .esc-row { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
+  .esc-label { font-size: 12px; font-weight: 600; color: #444441; min-width: 90px; flex-shrink: 0; padding-top: 4px; }
+  .esc-track { display: flex; gap: 5px; flex: 1; flex-wrap: wrap; }
+  .esc-step { padding: 4px 11px; border-radius: 6px; font-size: 11px; border: 1px solid; line-height: 1.4; }
+  .lvl1 { background: #e1f5ee; color: #085041; border-color: #9fe1cb; }
+  .lvl2 { background: #faeeda; color: #633806; border-color: #fac775; }
+  .lvl3 { background: #faece7; color: #711b13; border-color: #f5c4b3; }
+  .lvl-pred { background: #eeedfe; color: #3c3489; border-color: #cecbf6; border-style: dashed; }
+  /* Prediction cards */
+  .pred-card { background: #fff; border: 0.5px solid #d3d1c7; border-radius: 10px; padding: 14px; margin-bottom: 10px; }
+  .pred-card.sure { border-color: #b5d4f4; border-width: 1.5px; }
+  .pred-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; gap: 12px; flex-wrap: wrap; }
+  .pred-title { font-size: 14px; font-weight: 600; color: #1a1a18; }
+  .prob-wrap { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  .prob-track { width: 90px; height: 6px; background: #f1efe8; border-radius: 3px; overflow: hidden; }
+  .prob-fill { height: 100%; border-radius: 3px; }
+  .prob-val { font-size: 12px; font-weight: 600; min-width: 32px; text-align: right; }
+  .pred-body { font-size: 12px; color: #444441; line-height: 1.65; }
+  .pred-tag { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 10px; font-weight: 600; margin-right: 6px; margin-bottom: 6px; border: 1px solid; }
+  .tag-sure { background: #eaf3de; color: #27500a; border-color: #c0dd97; }
+  .tag-hot { background: #faeeda; color: #633806; border-color: #fac775; }
+  .tag-warm { background: #e1f5ee; color: #085041; border-color: #9fe1cb; }
+  .tag-new { background: #eeedfe; color: #3c3489; border-color: #cecbf6; }
+  .divider { height: 1px; background: #d3d1c7; margin: 20px 0; }
+  .info-box { background: #e6f1fb; border-left: 3px solid #378add; border-radius: 0 6px 6px 0; padding: 12px 16px; margin-bottom: 20px; font-size: 13px; color: #0c447c; }
+  .gap-tag-wrap { display: flex; flex-wrap: wrap; gap: 6px; }
+  footer { margin-top: 40px; padding-top: 20px; border-top: 0.5px solid #d3d1c7; font-size: 12px; color: #888780; text-align: center; }
+  @media (max-width: 600px) { .grid2, .grid3 { grid-template-columns: 1fr; } .esc-label { min-width: 70px; } }
+</style>
+</head>
+<body>
+<div class="page">
+  <header>
+    <h1>IHK AP2 FiSi — Musteranalyse & Prognose</h1>
+    <p class="subtitle">Das System hinter den Prüfungen 2021–2025 · Prognose Sommer 2026 · Fachinformatiker Systemintegration (AO 2020)</p>
+  </header>
+
+  <div class="info-box">
+    <strong>Kernbefund:</strong> Die IHK arbeitet mit einem klaren Slot-Rotation- und Eskalationssystem. Kein Thema wird zweimal auf demselben Niveau abgefragt. Bekannte Themen steigen im Schwierigkeitsgrad — von "erläutern" über "berechnen" bis "Fehler analysieren". Neue Themen kommen aus dem AO-2020-Lehrplan, der noch nicht vollständig abgearbeitet ist.
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="show('s1',this)">Das System</button>
+    <button class="tab" onclick="show('s2',this)">Rotationsmuster</button>
+    <button class="tab" onclick="show('s3',this)">Eskalationslogik</button>
+    <button class="tab" onclick="show('s4',this)">Prognose S2026</button>
+  </div>
+
+  <!-- ═══════════ TAB 1: DAS SYSTEM ═══════════ -->
+  <div id="s1" class="section active">
+    <p class="sl">Wie die IHK-Prüfer strukturieren — der Bauplan beider Teile</p>
+
+    <div class="grid2">
+      <div class="mcard"><div class="ml">Aufgaben je Teil-1-Prüfung</div><div class="mv">4 von 5 frei wählbar</div></div>
+      <div class="mcard"><div class="ml">Aufgaben je Teil-2-Prüfung</div><div class="mv">4 Pflicht</div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Teil 1 — festes 4-Slot-System</div>
+      <div class="pattern">
+        <div class="pattern-title">Slot A — Infrastruktur & Hardware <span style="font-weight:400;color:#888780">(immer vorhanden)</span></div>
+        <div class="pattern-text">Storage-Berechnungen (Kapazität, RAID-Anzahl), Server-Hardware-Auswahl, Verfügbarkeitskonzepte. Dreht zwischen <em>Storage-Fokus</em> (RAID, NAS/SAN, MTBF) und <em>Server-Fokus</em> (CPU-Auswahl, RAM, Redundanz). Immer mit Rechenweg.</div>
+      </div>
+      <div class="pattern">
+        <div class="pattern-title">Slot B — Betrieb & Konzepte <span style="font-weight:400;color:#888780">(wechselnd)</span></div>
+        <div class="pattern-text">Rotiert zwischen: Backup/Archivierung, Patch-Management, Monitoring, USV-Typen, Skalierung, RTO/RPO. Typisch: Ein englischer Fachtext wird vorgelegt und muss interpretiert werden — z. B. RFC-Ausschnitt, Wikipedia-Auszug oder Herstellerdokumentation.</div>
+      </div>
+      <div class="pattern">
+        <div class="pattern-title">Slot C — Programmierung <span style="font-weight:400;color:#888780">(immer vorhanden, immer C#)</span></div>
+        <div class="pattern-text">Immer C#-Konsolenanwendungen mit Arrays und Schleifen. Rotiert zwischen drei Formaten: (1) Code schreiben nach Vorgabe, (2) unvollständigen Code ergänzen, (3) fehlerhaften Code analysieren + korrigieren. Selten: UML-Aktivitätsdiagramm als Vorstufe. In W22/23 erstmals OOP (Vererbung, Datenkapselung).</div>
+      </div>
+      <div class="pattern">
+        <div class="pattern-title">Slot D — IT-Sicherheit <span style="font-weight:400;color:#888780">(immer vorhanden, zunehmend komplex)</span></div>
+        <div class="pattern-text">Entweder klassische Themen (Phishing-Analyse, Malware-Typen, CIA-Schutzziele) oder modernere Aspekte (DKIM/SPF, System-Härtung, MDM, Zero-Trust). Dieser Slot hat in den letzten Jahren an Tiefe gewonnen — von "nennen" zu "analysieren".</div>
+      </div>
+      <div class="note">Hinweis: Prüflinge wählen 4 von 5 Handlungsschritten. Slot C (Programmierung) wird von FiSi-Kandidaten fast immer bearbeitet — er ist spezifisch für das Berufsbild.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Teil 2 — festes Gerüst mit rotierendem Pool</div>
+      <div class="pattern">
+        <div class="pattern-title">Aufgabe 1 — Die "Mammutaufgabe" (~26–30 Punkte) <span style="font-weight:400;color:#888780">(100% konstant)</span></div>
+        <div class="pattern-text">Immer: IP-Adressierung + Subnetting + NAT/PAT + Routing in einem Unternehmensszenario mit Netzwerkplan. Enthält fast immer: Routing-Tabelle ausfüllen, NAT erläutern oder Paket nach NAT-Durchgang ergänzen, IPv6-Anteile nehmen zu.</div>
+      </div>
+      <div class="pattern">
+        <div class="pattern-title">Aufgaben 2–4 — Rotating Pool (~20–29 Punkte je)</div>
+        <div class="pattern-text">Aus ~8 Themen werden 3 gewählt: VLAN, WLAN, VPN/Kryptographie, DNS (inkl. Angriffe), Firewall-Regeln, Protokolldiagnose (Traceroute, Wireshark), Internetanschlüsse, spezifische Protokolle. Typisch: ein Layer-2-Thema + ein Sicherheitsthema + ein Anwendungsschicht-Thema.</div>
+      </div>
+      <div class="pattern">
+        <div class="pattern-title">Der "Praxisfall"-Treiber — Unternehmenskontext bestimmt Themen</div>
+        <div class="pattern-text">
+          Homeoffice-Firma → VPN + DHCP-Relay + Bandbreite<br>
+          Filialunternehmen → WAN + NAT + statisches Routing<br>
+          IT-Sicherheitsvorfall → Firewall + Forensik + Kryptographie<br>
+          Unternehmensexpansion → Subnetting + neue Infrastruktur + VLAN
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ TAB 2: ROTATIONSMUSTER ═══════════ -->
+  <div id="s2" class="section">
+    <p class="sl">Welche Themen wann und in welcher Kombination drankamen</p>
+
+    <div class="card">
+      <div class="card-title">Teil 2 — Themenrotation 2021–2026</div>
+      <div class="tl-wrap">
+        <table class="tl">
+          <thead>
+            <tr>
+              <th style="min-width:72px">Prüfung</th>
+              <th>Aufgabe 1 (fest)</th>
+              <th>Aufgabe 2</th>
+              <th>Aufgabe 3</th>
+              <th>Aufgabe 4</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="exam">W21/22</td>
+              <td><span class="chip cb">Subnetting</span><span class="chip cb">NAT</span><span class="chip cb">Routing</span></td>
+              <td><span class="chip cp">VPN</span><span class="chip cp">Firewall-Regeln</span></td>
+              <td><span class="chip cg">WLAN WPA2</span><span class="chip cg">RADIUS/AAA</span></td>
+              <td><span class="chip ca">Traceroute</span><span class="chip ca">IPv6-Analyse</span></td>
+            </tr>
+            <tr>
+              <td class="exam">S22</td>
+              <td><span class="chip cb">Subnetting</span><span class="chip cb">NAT/PAT</span><span class="chip cb">Routing</span></td>
+              <td><span class="chip cp">VPN-Poolberechnung</span><span class="chip cp">Bandbreite</span></td>
+              <td><span class="chip cg">WLAN-Vorteile</span><span class="chip cg">Webcam-Anbindung</span></td>
+              <td><span class="chip ca">Firewall/Spam</span><span class="chip ca">Sandbox</span></td>
+            </tr>
+            <tr>
+              <td class="exam">W22/23</td>
+              <td><span class="chip cb">Subnetting</span><span class="chip cb">NAT</span><span class="chip cb">Routing</span></td>
+              <td><span class="chip cp">VLAN</span><span class="chip cp">802.1Q</span></td>
+              <td><span class="chip cg">Firewall-Regeln</span><span class="chip cg">DMZ</span></td>
+              <td><span class="chip ca">DNS + IPv6</span><span class="chip ca">VoIP+Fax</span></td>
+            </tr>
+            <tr>
+              <td class="exam">S23</td>
+              <td><span class="chip cb">Subnetting</span><span class="chip cb">NAT</span><span class="chip cb">Routing</span></td>
+              <td><span class="chip cp">VLAN</span><span class="chip cp">DHCP-Relay</span></td>
+              <td><span class="chip cg">VPN + Split-Tunnel</span></td>
+              <td><span class="chip ca">DNS tief</span><span class="chip ca">SPF</span></td>
+            </tr>
+            <tr>
+              <td class="exam">W23/24</td>
+              <td><span class="chip cb">Subnetting</span><span class="chip cb">NAT</span><span class="chip cb">Routing</span></td>
+              <td><span class="chip cp">Routing + WLAN Enterprise</span></td>
+              <td><span class="chip cg">VPN + PKI + Zertifikate</span></td>
+              <td><span class="chip ca">DNS + DNSSEC</span><span class="chip ca">TLS 1.3</span></td>
+            </tr>
+            <tr>
+              <td class="exam">S24</td>
+              <td><span class="chip cb">Subnetting</span><span class="chip cb">NAT</span><span class="chip cb">Routing</span></td>
+              <td><span class="chip cp">VLAN</span><span class="chip cp">Trunk-Ports</span></td>
+              <td><span class="chip cg">DNS-Fehleranalyse</span><span class="chip cg">ARP</span></td>
+              <td><span class="chip ca">WLAN-Scan</span><span class="chip ca">Voucher</span></td>
+            </tr>
+            <tr>
+              <td class="exam">W24/25</td>
+              <td><span class="chip cb">Subnetting</span><span class="chip cb">NAT</span><span class="chip cb">Routing</span></td>
+              <td><span class="chip cp">VLAN</span><span class="chip cp">Native VLAN</span></td>
+              <td><span class="chip cg">DNS / CNAME-Fehler</span></td>
+              <td><span class="chip ca">NGFW</span><span class="chip ca">SSL-Inspection</span></td>
+            </tr>
+            <tr>
+              <td class="exam">S25</td>
+              <td><span class="chip cb">Subnetting</span><span class="chip cb">NAT</span><span class="chip cb">Routing</span></td>
+              <td><span class="chip cp">DSL/GPON/LTE</span></td>
+              <td><span class="chip cg">DNS rekursiv/iterativ</span><span class="chip cg">DNS-Sicherheit</span></td>
+              <td><span class="chip ca">IPv6-Subnetze</span><span class="chip ca">DMZ</span></td>
+            </tr>
+            <tr>
+              <td class="exam">W25/26</td>
+              <td><span class="chip cb">Subnetting</span><span class="chip cb">NAT</span><span class="chip cb">Routing</span></td>
+              <td><span class="chip cp">Server-Auswahl</span><span class="chip cp">Badewannenkurve</span></td>
+              <td><span class="chip cg">NAT-Tabelle</span><span class="chip cg">VPN-Berechnung</span></td>
+              <td><span class="chip ca">WLAN Enterprise</span></td>
+            </tr>
+            <tr class="pred">
+              <td class="exam">S26 ⟶ Prognose</td>
+              <td><span class="chip cb">Subnetting</span><span class="chip cb">NAT</span><span class="chip cb">Routing</span></td>
+              <td><span class="chip cp">VLAN? / Routing-Vertiefung?</span></td>
+              <td><span class="chip cg">DNS: DMARC / DoH?</span></td>
+              <td><span class="chip ca">VPN: IPSec-Modi? / WLAN-Neu?</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note">Blau = Aufgabe 1 (konstant) · Lila = Aufgabe 2 · Grün = Aufgabe 3 · Gelb = Aufgabe 4 · Kursiv/lila Zeile = Prognose</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Erkannte Zyklen — die wichtigsten Wiederholungsmuster</div>
+      <div class="pattern">
+        <div class="pattern-title" style="color:#185fa5">VLAN-Zyklus (~alle 1–2 Prüfungen)</div>
+        <div class="pattern-text">W22/23 → S23 → (Pause W23) → S24 → W24/25 → (Pause S25, W25) → S26 wahrscheinlich wieder. Jedes Mal anderes Niveau: erst 802.1Q erläutern, dann DHCP-Relay, dann Trunk-Ports, dann Native VLAN. Die Progression ist klar ablesbar.</div>
+      </div>
+      <div class="pattern">
+        <div class="pattern-title" style="color:#085041">DNS-Eskalationszyklus (stetig aufwärts)</div>
+        <div class="pattern-text">W22: DNS + IPv6 nebenher → S23: Einträge analysieren + SPF → W23: DNSSEC + Spoofing → W24: CNAME-Fehler + FTP-DNS → S25: rekursiv/iterativ + Sicherheit. Klare Aufwärtsspirale — nie zweimal dasselbe Niveau. Nächste Stufe: DMARC oder DoH/DoT.</div>
+      </div>
+      <div class="pattern">
+        <div class="pattern-title" style="color:#854f0b">VPN-Rotation mit jeweils neuem Winkel</div>
+        <div class="pattern-text">W21: VPN-Konzept → S22: Pool berechnen (RFC 3021) → S23: Split-Tunnel-Fehler → W23: PKI + Zertifikatsfehler + TLS 1.3. Jedes Auftreten nimmt eine neue Perspektive ein. Nächster Winkel: IPSec-Modi oder IKEv2-Handshake.</div>
+      </div>
+      <div class="pattern">
+        <div class="pattern-title" style="color:#3c3489">Teil 1 Programmierung — drei Formate im Wechsel</div>
+        <div class="pattern-text">Format A (Code schreiben) → Format B (Code ergänzen) → Format C (Fehler finden + korrigieren) → zurück zu A mit höherer Komplexität. W24/25 war Format C mit komplexem Algorithmus. S26 wird wahrscheinlich Format A/B, aber mit OOP-Elementen oder File-I/O.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ TAB 3: ESKALATIONSLOGIK ═══════════ -->
+  <div id="s3" class="section">
+    <p class="sl">Das Prinzip dahinter — Themen werden tiefer, nicht wiederholt</p>
+
+    <div class="card">
+      <div class="card-title">Themen-Eskalation über Jahre</div>
+      <p style="font-size:12px;color:#5f5e5a;margin-bottom:16px">
+        <span style="display:inline-block;padding:2px 8px;border-radius:4px;background:#e1f5ee;color:#085041;border:1px solid #9fe1cb;font-size:11px;margin-right:6px">Grün = Grundlagen erläutern</span>
+        <span style="display:inline-block;padding:2px 8px;border-radius:4px;background:#faeeda;color:#633806;border:1px solid #fac775;font-size:11px;margin-right:6px">Gelb = Berechnen / Anwenden</span>
+        <span style="display:inline-block;padding:2px 8px;border-radius:4px;background:#faece7;color:#711b13;border:1px solid #f5c4b3;font-size:11px;margin-right:6px">Orange = Analysieren / Fehler</span>
+        <span style="display:inline-block;padding:2px 8px;border-radius:4px;background:#eeedfe;color:#3c3489;border:1px dashed #cecbf6;font-size:11px">Gestrichelt = Prognose</span>
+      </p>
+
+      <div class="esc-row"><span class="esc-label">VPN</span><div class="esc-track"><span class="esc-step lvl1">Konzept erläutern (W21)</span><span class="esc-step lvl2">Pool berechnen (S22)</span><span class="esc-step lvl2">Split-Tunnel-Fehler (S23)</span><span class="esc-step lvl3">PKI + Zert.-Fehler (W23)</span><span class="esc-step lvl-pred">IPSec-Modi? IKEv2?</span></div></div>
+      <div class="esc-row"><span class="esc-label">DNS</span><div class="esc-track"><span class="esc-step lvl1">Grundfunktion (W22)</span><span class="esc-step lvl2">Einträge + SPF (S23)</span><span class="esc-step lvl3">DNSSEC + Spoofing (W23)</span><span class="esc-step lvl3">Fehleranalyse CNAME (W24)</span><span class="esc-step lvl-pred">DMARC? DoH/DoT?</span></div></div>
+      <div class="esc-row"><span class="esc-label">WLAN</span><div class="esc-track"><span class="esc-step lvl1">WPA2-Typen (W21)</span><span class="esc-step lvl2">RADIUS/AAA + PoE (W21)</span><span class="esc-step lvl2">Enterprise + Vorteile (W23)</span><span class="esc-step lvl3">Scan-Analyse (S24)</span><span class="esc-step lvl-pred">Roaming? 802.11r? WiFi 6?</span></div></div>
+      <div class="esc-row"><span class="esc-label">Firewall</span><div class="esc-track"><span class="esc-step lvl1">Regeln erstellen (W21)</span><span class="esc-step lvl2">Regeln für DMZ (W22)</span><span class="esc-step lvl3">NGFW-Konzept (W24)</span><span class="esc-step lvl3">SSL-Inspection (W24)</span><span class="esc-step lvl-pred">IDS/IPS? Zero-Day?</span></div></div>
+      <div class="esc-row"><span class="esc-label">VLAN</span><div class="esc-track"><span class="esc-step lvl1">802.1Q erläutern (W22)</span><span class="esc-step lvl2">DHCP-Relay (S23)</span><span class="esc-step lvl2">Trunk-Ports (S24)</span><span class="esc-step lvl3">Native VLAN (W24)</span><span class="esc-step lvl-pred">Switch-Härtung komplex?</span></div></div>
+      <div class="esc-row"><span class="esc-label">Routing</span><div class="esc-track"><span class="esc-step lvl1">Tabelle ausfüllen (immer)</span><span class="esc-step lvl2">Metrik erklären (W23)</span><span class="esc-step lvl2">Statisch vs. Dynamisch (W21, W23)</span><span class="esc-step lvl-pred">OSPF? BGP-Grundlagen?</span></div></div>
+      <div class="esc-row"><span class="esc-label">Prog. (T1)</span><div class="esc-track"><span class="esc-step lvl1">Array + Schleife schreiben</span><span class="esc-step lvl2">Code vervollständigen</span><span class="esc-step lvl3">Fehler finden + korrigieren</span><span class="esc-step lvl-pred">OOP-Klassen? File-I/O?</span></div></div>
+      <div class="esc-row"><span class="esc-label">Storage (T1)</span><div class="esc-track"><span class="esc-step lvl1">RAID erklären</span><span class="esc-step lvl2">Festplatten berechnen</span><span class="esc-step lvl3">RAID 5+6+10 vergleichen</span><span class="esc-step lvl-pred">Tiered Storage? Mix-Match?</span></div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Die drei Fragetypen je Thema</div>
+      <div class="grid3">
+        <div class="pattern">
+          <div class="pattern-title" style="color:#085041">Stufe 1 — Wissen</div>
+          <div class="pattern-text">"Erläutern Sie…", "Nennen Sie…", "Was versteht man unter…"<br><br>Erscheint beim <strong>ersten Auftreten</strong> eines Themas. Oft mit einem Fachtext als Hilfestellung.</div>
+        </div>
+        <div class="pattern">
+          <div class="pattern-title" style="color:#633806">Stufe 2 — Anwenden</div>
+          <div class="pattern-text">"Berechnen Sie…", "Vervollständigen Sie…", "Ordnen Sie zu…"<br><br>Erscheint beim <strong>zweiten/dritten Auftreten</strong>. Vorherige Kenntnis wird vorausgesetzt.</div>
+        </div>
+        <div class="pattern">
+          <div class="pattern-title" style="color:#711b13">Stufe 3 — Analysieren</div>
+          <div class="pattern-text">"Analysieren Sie den Fehler…", "Beschreiben Sie eine Ursache…", "Beurteilen Sie…"<br><br>Erscheint erst, wenn <strong>Grundlagen etabliert</strong> sind. Oft Fehlerszenario mit Screenshot/Log.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Lücken im Curriculum — noch nie explizit abgefragt</div>
+      <p style="font-size:12px;color:#5f5e5a;margin-bottom:12px">Diese Themen stehen im AO-2020-Rahmenlehrplan, waren aber noch nie Prüfungsgegenstand. Hohe Wahrscheinlichkeit für Erstauftreten in den nächsten 2–3 Jahren.</p>
+      <div class="gap-tag-wrap">
+        <span class="chip cr">OSPF / BGP-Grundlagen</span>
+        <span class="chip cr">EUI-64 (IPv6 Auto-Config)</span>
+        <span class="chip cr">DMARC (E-Mail-Sicherheit)</span>
+        <span class="chip cr">DoH / DoT (DNS über HTTPS/TLS)</span>
+        <span class="chip cr">IaaS / PaaS / SaaS</span>
+        <span class="chip cr">Hypervisor Typ 1 vs. Typ 2</span>
+        <span class="chip cr">IPSec-Modi (Tunnel / Transport)</span>
+        <span class="chip cr">GFS-Backup (Großvater-Vater-Sohn)</span>
+        <span class="chip cr">802.11ax / WiFi 6 (Merkmale)</span>
+        <span class="chip cr">SNMPv3 / Monitoring</span>
+        <span class="chip cr">QoS (Quality of Service)</span>
+        <span class="chip cr">IDS / IPS (Unterschied)</span>
+        <span class="chip cr">Containerisierung (Docker-Netzwerk)</span>
+        <span class="chip cr">Active Directory Grundlagen</span>
+        <span class="chip cr">MFA / 2FA (Verfahren)</span>
+        <span class="chip cr">ITIL-Prozesse</span>
+        <span class="chip cr">GFS-Rotationsschema</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ TAB 4: PROGNOSE S2026 ═══════════ -->
+  <div id="s4" class="section">
+    <p class="sl">Was in Sommer 2026 kommen könnte — abgeleitet aus dem Rotationsmuster</p>
+
+    <div class="grid2">
+      <div class="mcard"><div class="ml">Nächste Prüfung</div><div class="mv">Sommer 2026</div></div>
+      <div class="mcard"><div class="ml">Termin ca.</div><div class="mv">April / Mai 2026</div></div>
+    </div>
+
+    <h3 style="font-size:14px;font-weight:600;margin:8px 0 12px;color:#1a1a18">Teil 1 — Prognosen</h3>
+
+    <div class="pred-card sure">
+      <div class="pred-header">
+        <span class="pred-title">Storage: RAID-Berechnung + neues Konzept</span>
+        <div class="prob-wrap"><div class="prob-track"><div class="prob-fill" style="width:90%;background:#1D9E75"></div></div><span class="prob-val" style="color:#085041">90%</span></div>
+      </div>
+      <div class="pred-body">
+        <span class="pred-tag tag-sure">Fast sicher</span><br>
+        RAID-Berechnung (Festplattenanzahl ermitteln) erscheint in 5 von 9 Prüfungen — kommt wieder. Das neue Konzept rotiert: <strong>Mix-and-Match-Prinzip</strong> (erstmals W25/26 in Lösungsblatt erwähnt) ist ein guter Kandidat, ebenso <strong>Tiered Storage</strong> oder <strong>SSD-in-RAID</strong>. Berechnung immer mit vollständigem Rechenweg.
+      </div>
+    </div>
+
+    <div class="pred-card">
+      <div class="pred-header">
+        <span class="pred-title">Programmierung: OOP oder Code-Fehleranalyse mit Komplexitätssteigerung</span>
+        <div class="prob-wrap"><div class="prob-track"><div class="prob-fill" style="width:80%;background:#1D9E75"></div></div><span class="prob-val" style="color:#085041">80%</span></div>
+      </div>
+      <div class="pred-body">
+        <span class="pred-tag tag-hot">Sehr wahrscheinlich</span><br>
+        W24/25 war Format C (Fehler analysieren + korrigieren). Typischer nächster Schritt: OOP-Klasse mit Attributen und Methoden schreiben (war nur 1x in W22), oder Fehleranalyse mit höherem Schwierigkeitsgrad (2D-Arrays, Klassen). <strong>File-I/O mit StreamReader/StreamWriter</strong> ist als Erstauftreten möglich — steht im Lehrplan, noch nie dran.
+      </div>
+    </div>
+
+    <div class="pred-card">
+      <div class="pred-header">
+        <span class="pred-title">IT-Sicherheit: MFA / Phishing wieder fällig</span>
+        <div class="prob-wrap"><div class="prob-track"><div class="prob-fill" style="width:70%;background:#BA7517"></div></div><span class="prob-val" style="color:#633806">70%</span></div>
+      </div>
+      <div class="pred-body">
+        <span class="pred-tag tag-hot">Wahrscheinlich</span><br>
+        Phishing-Analyse erscheint alle 2–3 Prüfungen — nach Pause in W24/25 und W25/26 wäre S26 "fällig". Mögliche Variante: <strong>Multi-Faktor-Authentifizierung (MFA)</strong> im Kontext von Homeoffice-Sicherheit oder Notebook-Verlust — noch nie explizit abgefragt. Zero-Trust hatte Erstauftreten in S25, Vertiefung kommt typisch nach 2 Prüfungen.
+      </div>
+    </div>
+
+    <div class="pred-card">
+      <div class="pred-header">
+        <span class="pred-title">Backup/Betrieb: GFS-Schema oder RTO/RPO-Vertiefung</span>
+        <div class="prob-wrap"><div class="prob-track"><div class="prob-fill" style="width:55%;background:#BA7517"></div></div><span class="prob-val" style="color:#633806">55%</span></div>
+      </div>
+      <div class="pred-body">
+        <span class="pred-tag tag-warm">Möglich</span><br>
+        Das <strong>Großvater-Vater-Sohn-Schema (GFS)</strong> ist im Lehrplan und noch nie dran — gut geeignet als Aufgabe, bei der man aus einer Bandliste die richtigen Bänder für eine Wiederherstellung ermitteln muss (ähnliche Aufgabenform gab es W23/24). Alternativ: Backup-Konzept für Hybrid-Cloud oder Vertiefung RTO/RPO.
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <h3 style="font-size:14px;font-weight:600;margin:0 0 12px;color:#1a1a18">Teil 2 — Prognosen</h3>
+
+    <div class="pred-card sure">
+      <div class="pred-header">
+        <span class="pred-title">Aufgabe 1: Subnetting + Routing + NAT/PAT</span>
+        <div class="prob-wrap"><div class="prob-track"><div class="prob-fill" style="width:100%;background:#378ADD"></div></div><span class="prob-val" style="color:#185fa5">100%</span></div>
+      </div>
+      <div class="pred-body">
+        <span class="pred-tag tag-sure">Absolut sicher</span><br>
+        War in allen 9 analysierten Prüfungen. IPv6-Anteile nehmen zu — S25 hatte /56→/64-Aufteilung. Mögliche Variante: IPv6-only mit NAT64/DNS64, oder CIDR für beide IP-Versionen kombiniert. Routing-Tabelle (meist statisch) und NAT-Erläuterung sind fix.
+      </div>
+    </div>
+
+    <div class="pred-card">
+      <div class="pred-header">
+        <span class="pred-title">DNS: DMARC oder DoH/DoT als nächste Eskalationsstufe</span>
+        <div class="prob-wrap"><div class="prob-track"><div class="prob-fill" style="width:65%;background:#1D9E75"></div></div><span class="prob-val" style="color:#085041">65%</span></div>
+      </div>
+      <div class="pred-body">
+        <span class="pred-tag tag-hot">Wahrscheinlich</span><br>
+        DNS erscheint fast jede Prüfung in aufsteigendem Niveau. SPF und DKIM wurden bereits abgefragt. <strong>DMARC</strong> als logische Ergänzung zu SPF/DKIM ist noch nie dran gewesen. Alternativ: <strong>DNS-over-HTTPS (DoH)</strong> oder DNS-over-TLS als Sicherheitsmaßnahme — passt zu Zero-Trust-Trend. Fehleranalyse in DNS-Einträgen bleibt wahrscheinlich ein Bestandteil.
+      </div>
+    </div>
+
+    <div class="pred-card">
+      <div class="pred-header">
+        <span class="pred-title">VLAN: Rückkehr nach Pause oder Komplexaufgabe</span>
+        <div class="prob-wrap"><div class="prob-track"><div class="prob-fill" style="width:50%;background:#BA7517"></div></div><span class="prob-val" style="color:#633806">50%</span></div>
+      </div>
+      <div class="pred-body">
+        <span class="pred-tag tag-warm">Möglich</span><br>
+        VLAN war W24/25, dann Pause in S25 und W25/26. Das Zyklusmuster zeigt: Nach 2 Prüfungen Pause kommt VLAN zurück. Wenn es kommt: wahrscheinlich <strong>Switch absichern</strong> (4 Maßnahmen wurden W24 angedeutet) oder VLAN + 802.1X Port-basierte Authentifizierung kombiniert.
+      </div>
+    </div>
+
+    <div class="pred-card">
+      <div class="pred-header">
+        <span class="pred-title">VPN: IPSec-Modi oder IKEv2 als Vertiefung</span>
+        <div class="prob-wrap"><div class="prob-track"><div class="prob-fill" style="width:50%;background:#BA7517"></div></div><span class="prob-val" style="color:#633806">50%</span></div>
+      </div>
+      <div class="pred-body">
+        <span class="pred-tag tag-new">Neue Tiefe möglich</span><br>
+        W23/24 hatte TLS 1.3 + Diffie-Hellman — höchste Tiefe bisher. Nächste logische Stufe: <strong>IPSec Tunnel-Modus vs. Transport-Modus</strong>, IKEv2-Handshake-Schritte, oder <strong>Perfect Forward Secrecy</strong> erläutern. Alternativ: VPN-Diagnose (Zertifikatsfehler in neuem Szenario).
+      </div>
+    </div>
+
+    <div class="pred-card">
+      <div class="pred-header">
+        <span class="pred-title">Wildcard: Containerisierung / Cloud-Grundlagen erstmalig</span>
+        <div class="prob-wrap"><div class="prob-track"><div class="prob-fill" style="width:25%;background:#888780"></div></div><span class="prob-val" style="color:#5f5e5a">25%</span></div>
+      </div>
+      <div class="pred-body">
+        <span class="pred-tag tag-new">Erstauftreten möglich</span><br>
+        IaaS/PaaS/SaaS, Hypervisor Typ 1 vs. Typ 2 und Docker-Netzwerke sind alle im AO-2020-Lehrplan und noch nie abgefragt. Wenn ein Wildcard-Thema kommt, ist es wahrscheinlich eines davon — gefragt auf Stufe 1 (erläutern, unterscheiden). Schwer vorherzusagen, aber der Lehrplan-Druck ist real.
+      </div>
+    </div>
+  </div>
+
+  <footer>Erstellt mit Claude &amp; IHK-Prüfungsunterlagen 2021–2025 (AO 2020) · Musteranalyse und Prognose · Alle Angaben ohne Gewähr · Analyse basiert auf 11 Prüfungen, ~210 Seiten</footer>
+</div>
+
+<script>
+function show(id, el) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  el.classList.add('active');
+}
+</script>
+</body>
+</html>
